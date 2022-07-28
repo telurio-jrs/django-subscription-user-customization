@@ -1,0 +1,151 @@
+{% include 'longevity_app/partials/header.html' %}
+{% include 'longevity_app/partials/sidebar.html' %}
+
+<body data-topbar='dark'>
+  <div id='layout-wrapper'>
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class='main-content'>
+      <div class='page-content'>
+        <div class='container-fluid'>
+          <!-- start page title -->
+          <div class='row'>
+            <div class='col-12'>
+              <div class='page-title-box d-sm-flex align-items-center justify-content-between'>
+                <h4 class='mb-sm-0 font-size-18'>Longevity InTime Articles</h4>
+                <div class='page-title-right'>
+                  <ol class='breadcrumb m-0'>
+                    <li class='breadcrumb-item'>Articles</li>
+                    <li class='breadcrumb-item active'>Display</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end page title -->
+          <div class='row'>
+            <div class='col-12'>
+              <div class='card'>
+                <div class='card-body'>
+                  {% if articles %}
+                    <div class='tab-content p-4'>
+                      <div class='tab-pane active' id='all-post' role='tabpanel'>
+                        <div>
+                          <div class='row justify-content-center'>
+                            <div class='col-xl-8'>
+                              <div>
+                                <form class='form-horizontal' action="{% url 'longevity_app:dashboard' %}" method='get'>
+                                  <div class='row mb-3 align-items-end'>
+                                    <div class='col-sm-10 mb-3'>
+                                      <input type='text' class='form-control match-select2' id='search' name='search' 
+                                        placeholder='Search by title, abstract or author'
+                                        value='{% if filter.search %}{{ filter.search }}{% endif %}'>
+                                    </div>
+                                    <div class='col-sm mb-3 align-self-end'>
+                                      <div class='d-grid'>
+                                        <button type='submit' class='btn btn-primary w-xs'>Search</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </form>
+                                {% for row in articles %}
+                                  <div>
+                                    <div class='form-row col-md d-flex justify-content-between'>
+                                      <h5><class='text-dark'>{{ row.art_title }}</class=></h5>
+                                      <button data-bs-toggle='modal' data-bs-target='.labelRemoveModal' data-value='{{ row.id }}' 
+                                        type='button' class='btn-close article_del' data-bs-dismiss='modal' aria-label='Close'></button>
+                                    </div>
+                                    {% if row.art_authors %}
+                                      <p class='text-muted'>{{ row.art_authors }}</p>
+                                    {% else %}
+                                      <p class='text-muted'>n.a.</p>
+                                    {% endif %}
+                                    {% if row.art_publish_year %}
+                                      <p class='text-muted'>{{ row.art_publish_year }}</p>
+                                    {% else %}
+                                      <p class='text-muted'>n.d.</p>
+                                    {% endif %}
+                                    {% if row.art_publish_year %}
+                                      <p>{{ row.art_abstract|slice:':300' }}{% if row.art_abstract|length > 300 %}...{% endif %}</p>
+                                    {% else %}
+                                      <p>...</p>
+                                    {% endif %}
+                                    <div>
+                                      <a href="{% url 'longevity_app:dashboard_detail' row.id %}" class='text-primary'>Read more <i class='mdi mdi-arrow-right'></i></a>
+                                    </div>
+                                  </div>
+                                  <hr class='my-5'>
+                                {% endfor %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <form action="{% comment %} {% url 'board:labels_beneficiaries' %} {% endcomment %}" method='get'>
+                        <input type='hidden' name='type' value='{{ filter.type }}'/>
+                        <input type='hidden' name='search' value='{{ filter.search }}'/>
+                        <ul class='pagination pagination-rounded justify-content-end mb-2'>
+                          <li class='page-item {% if pages.pg == 1 %}disabled{% endif %}'>
+                            <button class='page-link' type='submit' name='pg' value='1' aria-label='First'>
+                              <i class='mdi mdi-chevron-double-left'></i>
+                            </button>
+                          </li>
+                          {% for item in pages.pg_range %}
+                            <li class='page-item {% if pages.pg == item %}active{% endif %}'>
+                              <button class='page-link' type='submit' name='pg' value='{{ item }}'>{{ item }}</button>
+                            </li>
+                          {% endfor %}
+                          <li class='page-item {% if pages.pg == pages.total_pg %}disabled{% endif %}'>
+                            <button class='page-link' type='submit' name='pg' value='{{ pages.total_pg }}' aria-label='Last'>
+                              <i class='mdi mdi-chevron-double-right'></i>
+                            </button>
+                          </li>
+                        </ul>
+                      </form>
+                      <!-- end page footer -->
+                    </div>
+                  {% else %}
+                    <div class='table-responsive'>
+                      <div class='card-body'>No articles were found.</div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end row -->
+        </div>
+        <!-- container-fluid -->
+      </div>
+      <!-- End Page-content -->
+    </div>
+    <!-- end main content-->
+  </div>
+</body>
+
+{% include 'longevity_app/partials/footer.html' %}
+
+<!-- labelRemoveModal Modal -->
+<div class='modal fade labelRemoveModal' id='labelRemoveModal' tabindex='-1' role='dialog' aria-hidden='true'>
+  <div class='modal-dialog modal-dialog-centered' role='document'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title'>Remove Article</h5>
+        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+      </div>
+      <form class='needs-validation' action="{% url 'longevity_app:dashboard_remove' %}" novalidate method='post'>
+        {% csrf_token %}
+        <input type='hidden' id='del_article' name='del_article'/>
+        <div class='modal-body'>
+          <p>By closing this article you are reducing the probability that it will appear again in the future. Are you sure you want to continue?</p>
+        </div>
+        <div class='modal-footer'>
+          <button type='button' class='btn btn-secondary waves-effect' data-bs-dismiss='modal'>Cancel</button>
+          <button type='submit' class='btn btn-primary waves-effect waves-light'>Proceed</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end labelRemoveModal -->

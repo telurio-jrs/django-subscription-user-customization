@@ -1,0 +1,75 @@
+{% include 'longevity_app/partials/head.html' %}
+{% load static %}
+
+<body>
+  <div class='account-pages my-5 pt-sm-5'>
+    <div class='container'>
+      <div class='row justify-content-center'>
+        <div class='col-md-8 col-lg-6 col-xl-5'>
+          <div class='card overflow-hidden'>
+            <div class='bg-primary bg-soft'>
+              <div class='row'>
+                <div class='col-7'>
+                  <div class='text-primary p-4'>
+                    <h5 class='text-primary'>Welcome Back !</h5>
+                    <p>Sign in to continue to Longevity InTime.</p>
+                  </div>
+                </div>
+                <div class='col-5 align-self-end'>
+                  <img src="{% static 'global/images/profile-img.png' %}" alt='' class='img-fluid'>
+                </div>
+              </div>
+            </div>
+              <div class='card-body pt-0'> 
+                <div class='auth-logo'>
+                  <a href="{% url 'longevity_app:index' %}" class='auth-logo-dark'>
+                    <div class='avatar-md profile-user-wid mb-2'>
+                      <span class='avatar-title rounded-circle bg-light'>
+                        <img src="{% static 'global/images/logo.svg' %}" alt='' height='25'>
+                      </span>
+                    </div>
+                  </a>
+                </div>
+                <div class='p-2'>
+                  {% if success %}
+                    <div class='alert alert-success' role='alert'>{{ success }}</div>
+                  {% elif error %}
+                    <div class='alert alert-danger' role='alert'>{{ error }}</div>
+                  {% endif %}
+                  <form class='form-horizontal needs-validation' action="{% url 'longevity_app:index_auth' %}" novalidate method='post'>
+                    {% csrf_token %}
+                    <div class='mb-3'>
+                      <label for='use_login' class='form-label'>Email</label>
+                      <input type='email' class='form-control valid_email' id='use_login' 
+                        name='use_login' placeholder='Enter email' required>
+                      <div class='invalid-feedback'>Please enter email</div>
+                    </div>
+                    <div class='mb-3'>
+                      <label for='use_password' class='form-label'>Password</label>
+                      <div class='input-group auth-pass-inputgroup'>
+                        <input type='password' class='form-control valid_pass bypass' placeholder='Enter password' aria-label='Password' 
+                          aria-describedby='password-addon' id='use_password' name='use_password' required>
+                        <button class='btn btn-light ' type='button' id='password-addon'>
+                          <i class='mdi mdi-eye-outline'></i></button>
+                        <div class='invalid-feedback'>Please enter password</div>
+                      </div>
+                    </div>
+                    <div class='mt-4 d-grid'>
+                      <button class='btn btn-primary waves-effect waves-light' type='submit'>Log in</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+          </div>
+          <div class='mt-4 text-center'>
+            <div>
+              <p>© <script>document.write(new Date().getFullYear())</script> <i class='mdi mdi-heart text-danger'></i> Longevity InTime.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+{% include 'longevity_app/partials/footer.html' %}

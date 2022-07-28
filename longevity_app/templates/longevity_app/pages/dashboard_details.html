@@ -1,0 +1,213 @@
+{% include 'longevity_app/partials/header.html' %}
+{% include 'longevity_app/partials/sidebar.html' %}
+
+<body data-topbar='dark'>
+  <div id='layout-wrapper'>
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class='main-content'>
+      <div class='page-content'>
+        <div class='container-fluid'>
+          <!-- start page title -->
+          <div class='row'>
+            <div class='col-12'>
+              <div class='page-title-box d-sm-flex align-items-center justify-content-between'>
+                <h4 class='mb-sm-0 font-size-18'>Longevity InTime Articles</h4>
+                <div class='page-title-right'>
+                  <ol class='breadcrumb m-0'>
+                    <li class='breadcrumb-item'>Article</li>
+                    <li class='breadcrumb-item active'>Detail</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end page title -->
+          <div class='row'>
+            <div class='col-lg-12'>
+              <div class='card'>
+                <div class='card-body'>
+                  <div class='row mb-2 mt-2'>
+                    <div class='col-sm-4'>
+                    </div>
+                    <div class='col-sm-8'>
+                      <div class='text-sm-end'>
+                        <a class='btn btn-outline-secondary waves-effect waves-light mb-3 w-md' href="{% url 'longevity_app:dashboard' %}">
+                          Return
+                        </a>
+                      </div>
+                    </div><!-- end col-->
+                  </div>
+                  <div class='pt-3'>
+                    <div class='row justify-content-center'>
+                      <div class='col-xl-8'>
+                        <div>
+                          {% if article %}
+                            <div class='text-center'>
+                              <h4>{{ article.art_title }}</h4>
+                              {% if article.art_journal %}
+                                <p class='text-muted {% if article.art_publish_year %}mb-2{% else %}mb-4{% endif %}'><i class='mdi mdi-newspaper me-1'></i>{{ article.art_journal }}</p>
+                              {% endif %}
+                              {% if article.art_publish_year %}
+                                <p class='text-muted mb-4'><i class='mdi mdi-calendar me-1'></i>{{ article.art_publish_year }}</p>
+                              {% endif %}
+                            </div>
+                            <hr>
+                            <div class='text-center'>
+                              <div class='row'>
+                                <div class='col-sm'>
+                                  <div>
+                                    <p class='text-muted mb-2'>{{ article.art_authors }}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <hr>
+                            <div class='mt-4'>
+                              <div class='text-muted font-size-14'>
+                                <p>{{ article.art_abstract }}</p>
+                                <div class='mt-4'>
+                                  <h5 class='mb-3'>Affiliations: </h5>
+                                  <div>
+                                    <div class='row'>
+                                      <div class='col-lg col-sm'>
+                                        <p class='text-muted mb-2'>{{ article.art_affiliations }}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                {% if article.art_keyword %}
+                                  <div class='mt-4'>
+                                    <h5 class='mb-3'>Keywords: </h5>
+                                    <div>
+                                      <div class='row'>
+                                        <div class='col-lg col-sm'>
+                                          <p class='text-muted mb-2'>{{ article.art_keyword }}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                {% endif %}
+                              </div>
+                              <a href='{{ article.art_url }}' target='_blank' class='small'>{{ article.art_url }}</a>
+                              <hr>
+                            </div>
+                          {% else %}
+                            <div class='text-center'>
+                              <h4>No artciles were found</h4>
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end row -->
+        </div>
+        <!-- container-fluid -->
+      </div>
+      <!-- End Page-content -->
+    </div>
+    <!-- end main content-->
+  </div>
+</body>
+
+{% include 'longevity_app/partials/footer.html' %}
+
+<!-- labelDetailsModal -->
+<div class='modal fade labelDetailsModal' tabindex='-1' role='dialog' aria-labelledby='labelDetailsModalLabel' aria-hidden='true'>
+  <div class='modal-dialog modal-dialog-centered' role='document'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title' id='labelDetailsModalLabel'>Beneficiary Label Details</h5>
+        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+      </div>
+      <div class='modal-body'>
+        <p class='mb-2 modal_register_date'>Register Date: <span class='text-primary'></span></p>
+        <p class='mb-2 modal_description'>Beneficiary Category: <span class='text-primary'></span></p>
+        <p class='mb-2 modal_name'>Beneficiary Name: <span class='text-primary'></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end labelDetailsModal -->
+
+<!-- labelEditModal Modal -->
+<div class='modal fade labelEditModal' id='labelEditModal' tabindex='-1' role='dialog' aria-hidden='true'>
+  <div class='modal-dialog modal-dialog-centered' role='document'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title'>Edit Beneficiary Label</h5>
+        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+      </div>
+      <form class='needs-validation' action='{% comment %} {% url 'board:labels_beneficiaries_edit' %} {% endcomment %}' novalidate method='post'>
+        {% csrf_token %}
+        <input type='hidden' id='edit_beneficiary' name='edit_beneficiary'/>
+        <div class='modal-body'>
+          <div class='content mt-1'>
+            <div class='row'>
+              <div class='col-lg-12'>
+                <div class='mb-2'>
+                  <label for='description' class='form-label'>Type</label>
+                  <input type='text' class='form-control checkbox_edit' id='description' placeholder='Enter type name (e.g. Provider)'
+                    name='description' maxlength='128' disabled>
+                  <div class='invalid-feedback'>Please enter type name</div>
+                </div>
+                <div class='mb-3'>
+                  <div class='form-check'>
+                    <input class='form-check-input' type='checkbox' id='checkbox_edit'>
+                    <label class='form-check-label' for='checkbox_edit'>Click here if you want to edit type name</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class='row'>
+              <div class='col-lg-12'>
+                <div class='mb-3'>
+                  <label for='name' class='form-label'>Name</label>
+                  <input type='text' class='form-control valid_entry_nd' id='name' name='name' 
+                    placeholder='Enter beneficiary name (e.g. yourself)' maxlength='128' required>
+                  <div class='invalid-feedback'>Please enter beneficiary name</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class='modal-footer'>
+          <button type='submit' class='btn btn-primary'>Edit Label</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end labelEditModal -->
+
+<!-- labelRemoveModal Modal -->
+<div class='modal fade labelRemoveModal' id='labelRemoveModal' tabindex='-1' role='dialog' aria-hidden='true'>
+  <div class='modal-dialog modal-dialog-centered' role='document'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title'>Remove Beneficiary Label</h5>
+        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+      </div>
+      <form class='needs-validation' action='{% comment %} {% url 'board:labels_beneficiaries_delete' %} {% endcomment %}' novalidate method='post'>
+        {% csrf_token %}
+        <input type='hidden' id='del_beneficiary' name='del_beneficiary'/>
+        <div class='modal-body'>
+          <p class='mb-4'>Are you sure you want to proceed with the beneficiary label removal?</p>
+          <p class='mb-2 modal_description'>Beneficiary Category: <span class='text-primary'></span></p>
+          <p class='mb-2 modal_name'>Beneficiary Name: <span class='text-primary'></span></p>
+        </div>
+        <div class='modal-footer'>
+          <button type='button' class='btn btn-secondary waves-effect' data-bs-dismiss='modal'>Cancel</button>
+          <button type='submit' class='btn btn-primary waves-effect waves-light'>Remove Label</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end labelRemoveModal -->
