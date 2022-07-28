@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'db.apps.DbConfig',
-    'longevity_app.apps.LongevityAppConfig',
+    'db',
+    'longevity_app',
     'django_extensions'
 ]
 

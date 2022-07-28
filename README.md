@@ -1,5 +1,7 @@
 # Django Project About User-Customized Area for General Recommendations
 
+Python3.10
+
 ## Setup
 
 ##### Clone this repository
@@ -23,7 +25,7 @@ source venv/bin/activate
 ##### Install requirements
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 Create a .env file to keep all env variables with their respective values. The variables names are located in .env-example
@@ -53,6 +55,8 @@ python manage.py runscript load
 Launch the app and use the following credentials to login
 
 ```bash
+python3 manage.py runserver
+
 Username: admin@longevityintime.dev
 Password: @dmin1234
 ```
