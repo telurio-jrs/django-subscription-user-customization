@@ -54,9 +54,6 @@ class Article(models.Model):
     art_publish_year = models.CharField(
         max_length=4, null=True, default=None, blank=True
     )
-    art_score = models.DecimalField(
-        max_digits=5, decimal_places=3, default=10
-    )
     art_date_created = models.DateTimeField(editable=False)
     art_date_updated = models.DateTimeField()
 
@@ -73,11 +70,12 @@ class Article(models.Model):
 
 class ArticlesWeight(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    wei_probability = models.DecimalField(max_digits=7, decimal_places=4)
-
-    class Meta:
-        managed = False
-        db_table = 'db_articlesweight'
+    wei_score = models.DecimalField(
+        max_digits=5, decimal_places=3, default=10
+    )
+    wei_probability = models.DecimalField(max_digits=9, decimal_places=6)
+    wei_date_created = models.DateTimeField(editable=False)
+    wei_date_updated = models.DateTimeField()
 
     def __str__(self) -> str:
         return str(self.article)

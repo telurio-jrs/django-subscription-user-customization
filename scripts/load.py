@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
-from db.models import Article
+from db.models import Article, ArticlesWeight
 
 
 def run():
@@ -22,7 +22,7 @@ def run():
             url = row['url']
             date = row['date'] if row['date'] != 'NO_DATE' else None
 
-            Article.objects.create(
+            article_id = Article.objects.create(
                 art_title=title,
                 art_abstract=abstract,
                 art_affiliations=affiliations,
@@ -31,7 +31,14 @@ def run():
                 art_keyword=keywords,
                 art_url=url,
                 art_publish_year=date,
-                art_score=10,
                 art_date_created=now,
                 art_date_updated=now
+            )
+
+            ArticlesWeight.objects.create(
+                article=article_id,
+                wei_score=10,
+                wei_probability=0.001101321,
+                wei_date_created=now,
+                wei_date_updated=now
             )

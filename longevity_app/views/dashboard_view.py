@@ -3,7 +3,7 @@ import os
 
 from db.library.utils.helper import paginator
 from db.models import Article, ArticlesWeight
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.shortcuts import redirect, render
 from django.views import View
 from numpy.random import choice
@@ -97,14 +97,20 @@ class DashboardView(View):
 
     def post(self, *args, **kwargs):
         # get existing entry from database
-        data = Article.objects.filter(
-            id=self.request.POST['del_article']
+        data = ArticlesWeight.objects.filter(
+            article=self.request.POST['del_article']
         ).first()
 
-        # updating data and saving - for delete status = 0
-        if data.art_score > 2:
-            data.art_score -= 2
+        if data.wei_score > 2:
+            data.wei_score -= 2
             data.save()
+
+        total_score = ArticlesWeight.objects.aggregate(Sum('wei_score'))
+        weights = ArticlesWeight.objects.all()
+
+        for i in weights:
+            i.wei_probability = i.wei_score/total_score['wei_score__sum']
+            i.save()
 
         self.request.session['success'] = 'Article removed successfully.'
         return redirect('longevity_app:dashboard')
